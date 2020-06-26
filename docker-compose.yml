@@ -1,0 +1,50 @@
+  version: '3'
+    
+  services:
+    redis:
+      image: "redis:alpine"
+      restart: always
+      container_name: tm_redis
+      expose:
+        - 6379
+      sysctls:
+        net.core.somaxconn: '65535'
+    db:
+      restart: always
+      volumes:
+        - tasks_mgr_postgres_data:/var/lib/postgresql/data/
+      image: postgres:12.3
+      environment:
+        - POSTGRES_DB=tasks
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=9kJ6nJXekuhz4h
+      container_name: tm_db
+    web:
+      build: .
+      command: gunicorn -t 180 -w 3 contract_manager.wsgi:application --bind 0.0.0.0:8000
+      restart: always
+      env_file:
+        - prod.env
+      volumes:
+        - tm_static_volume:/code/static
+      expose:
+        - 8000
+      depends_on:
+        - redis
+        - db
+      container_name: tm_web
+    nginx:
+      build: ./nginx
+      restart: always
+      container_name: tm_nginx
+      volumes:
+        - tm_static_volume:/code/static
+      ports:
+        - 1340:80
+      depends_on:
+        - web
+        - db
+    
+  volumes:
+    tasks_mgr_postgres_data:
+    tm_static_volume:
