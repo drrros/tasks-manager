@@ -1,3 +1,5 @@
+import datetime
+
 from django.conf import settings
 from django.db import models
 
@@ -15,3 +17,7 @@ class Task(models.Model):
 
     def __str__(self):
         return f'{self.task_header} ({self.task_type})'
+
+    @property
+    def recent(self):
+        return self.date_created > (self.date_created - datetime.timedelta(days=1))

@@ -1,7 +1,7 @@
 import datetime
 from django.utils import timezone
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import TestCase, Client
 from .models import Task
 
 
@@ -25,3 +25,13 @@ class TestModels(TestCase):
         self.assertEqual(task.task_content, 'Позвонить клиенту')
         self.assertEqual(task.task_type, 'Звонок')
         self.assertEqual(task.author, User.objects.get(id=1))
+
+class TestFrontend(TestCase):
+    def setUp(self):
+        TestModels.setUp(self)
+        self.client = Client()
+
+    def testHomePage(self):
+        response = self.client.get('/') # .content
+        # self.assertContains(response, 'Content')
+        print(response.content.decode(encoding='utf-8'))
