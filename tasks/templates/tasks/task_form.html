@@ -1,0 +1,36 @@
+{% extends 'tasks/base.html' %}
+{% load static %}
+{% block content %}
+
+        <form class="form" action="" method="POST">
+        {% csrf_token %}
+            <div class="row">
+                <div class="container col-4">
+                    <div class="card card-body" id="order_card">
+                        <div class="row">
+                            {% if type == 'create' %}
+                                <h6 class="text-center col-12 mb-0">Новое событие</h6>
+                            {% else %}
+                                <h6 class="text-center col-12 mb-0">Изменение события</h6>
+                            {% endif %}
+                        </div>
+                        <div class="dropdown-divider mb-3"></div>
+                        {{ form }}
+                        <div class="dropdown-divider mb-3"></div>
+                        <div class="container-fluid">
+                            {% if type == 'create' %}
+                                <div class="form-group row align-items-center">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block">Создать</button>
+                                </div>
+                            {% else %}
+                                <div class="form-group row align-items-center">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block">Изменить</button>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+{% endblock %}
