@@ -5,16 +5,23 @@ from tasks.models import Task
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    # url = serializers.HyperlinkedRelatedField(view_name='api:user-detail',
-    #                                           read_only=True)
+    tasks = serializers.HyperlinkedRelatedField(view_name='task-detail',
+                                                many=True,
+                                                read_only=True
+                                                # queryset=Task.objects.all()
+                                                )
+
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'groups']
+        fields = ['url', 'username', 'email', 'tasks']
 
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
-    # url = serializers.HyperlinkedRelatedField(view_name='api:task-detail',
-    #                                           read_only=True)
+    author = serializers.HyperlinkedRelatedField(view_name='user-detail',
+                                                 # read_only=True
+                                                 queryset=User.objects.all()
+                                                 )
+
     class Meta:
         model = Task
         fields = ['url', 'id', 'task_header', 'task_content', 'task_type',

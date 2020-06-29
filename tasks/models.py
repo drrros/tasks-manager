@@ -15,7 +15,7 @@ class Task(models.Model):
     task_type = models.CharField(choices=task_type_choice, max_length=30, null=False, blank=False, verbose_name='Тип события')
     task_date = models.DateTimeField(null=False, blank=False, verbose_name='Дата события')
     date_created = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="tasks")
 
     def __str__(self):
         return f'{self.task_header} ({self.task_type})'
