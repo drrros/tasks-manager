@@ -1,33 +1,48 @@
+from django.contrib import messages
+from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required  # , permission_required
 
 from .forms import TaskForm
 from .models import Task
 
-
+@login_required(login_url='login_user')
 def index(request):
+    author = User.objects.get(username=request.user.username)
     context = {
-        'tasks': Task.objects.all()
+        'tasks': Task.objects.filter(author_id=author.id)
     }
     return render(request, 'tasks/index.html', context=context)
 
-
+@login_required(login_url='login_user')
 def create_task(request):
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
+            form.save(commit=False)
+            form.instance.author = User.objects.get(username=request.user.username)
             form.save()
-            return redirect('home')
+            return redirect('index')
 
     else:
         form = TaskForm()
     context = {'form': form, 'type': 'create'}
     return render(request, 'tasks/task_form.html', context)
 
+@login_required(login_url='login_user')
+def update_task(request, pk):
+    task = get_object_or_404(Task, id=pk)
+    form = TaskForm(instance=task)
+    if request.method == 'POST':
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    context = {'form': form, 'type': 'update'}
+    return render(request, 'tasks/task_form.html', context)
 
-def update_task(request):
-    return None
-
-
+@login_required(login_url='login_user')
 def delete_task(request, pk):
     task = get_object_or_404(Task, id=pk)
     if request.method == 'POST':
@@ -35,3 +50,25 @@ def delete_task(request, pk):
         return redirect('index')
     context = {'item': task}
     return render(request, 'tasks/delete_task.html', context)
+
+# TODO: migrate delete_task to modal window
+
+def login_user(request):
+    if request.user.is_authenticated:
+        return redirect('index')
+    else:
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            user = authenticate(password=password, username=username)
+            if user:
+                login(request, user)
+                return redirect('index')
+            else:
+                messages.info(request, 'Неправильное имя пользователя или пароль')
+        return render(request, 'tasks/login.html', context={})
+
+@login_required(login_url='login_user')
+def logout_user(request):
+    logout(request)
+    return redirect('login_user')

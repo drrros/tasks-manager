@@ -32,6 +32,6 @@ class TestFrontend(TestCase):
         self.client = Client()
 
     def testHomePage(self):
-        response = self.client.get('/') # .content
-        # self.assertContains(response, 'Content')
+        response = self.client.get('/')
+        self.assertContains(response, 'Content')
         print(response.content.decode(encoding='utf-8'))

@@ -1,5 +1,9 @@
 {% extends 'tasks/base.html' %}
-{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/ru.js"></script>
+{% endblock head %}
 {% block content %}
 
         <form class="form" action="" method="POST">
@@ -34,3 +38,15 @@
         </form>
 
 {% endblock %}
+
+{% block scripts %}
+    <script>
+    window.addEventListener("DOMContentLoaded", function () {
+        flatpickr(".datetimefield", {
+            enableTime: true,
+            "locale": "ru",
+            dateFormat: "d.m.Y H:i",
+        });
+    });
+    </script>
+{% endblock scripts %}
