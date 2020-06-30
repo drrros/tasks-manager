@@ -143,8 +143,9 @@ CELERY_TIMEZONE = 'Europe/Volgograd'
 # parser_app.conf.enable_utc = False # so celery doesn't take utc by default
 # CELERY_BEAT_SCHEDULE = {
 #  'check-vz-10-min': {
-#        'task': 'parser_app.tasks.parse_vz',
-#        'schedule': 600.0,
+#        'task': 'sendemail',
+#        'schedule': 10.0,
 #        'args': None
 #     },
 # }
+CELERY_IMPORTS = ('tasks.celery_tasks' )
