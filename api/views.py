@@ -2,7 +2,6 @@ from django.contrib.auth.models import User
 
 from rest_framework import viewsets
 from rest_framework import permissions
-from rest_framework.authentication import TokenAuthentication
 
 from .serializers import UserSerializer, TaskSerializer
 from tasks.models import Task
@@ -15,7 +14,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
-    authentication_classes = [TokenAuthentication, ]
 
     def get_queryset(self):
         if self.request.user.is_superuser:
@@ -31,7 +29,6 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [TokenAuthentication, ]
 
 
     def get_queryset(self):
