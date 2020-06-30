@@ -7,4 +7,7 @@ from .tasks import send_mail
 
 @receiver(pre_save, sender=Task)
 def order_signal(sender, instance: Task, **kwargs):
+       print(sender)
+       print(instance)
+       print(kwargs)
        pass
