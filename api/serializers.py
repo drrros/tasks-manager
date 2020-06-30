@@ -10,17 +10,18 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
                                                 read_only=True
                                                 # queryset=Task.objects.all()
                                                 )
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'tasks']
+        fields = ['url', 'id', 'username', 'email', 'password', 'tasks']
 
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
-    author = serializers.HyperlinkedRelatedField(view_name='user-detail',
-                                                 # read_only=True
-                                                 queryset=User.objects.all()
-                                                 )
+
+    author = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
 
     class Meta:
         model = Task

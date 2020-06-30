@@ -1,4 +1,6 @@
 import datetime
+
+from django.test.client import MULTIPART_CONTENT
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
@@ -33,5 +35,50 @@ class TestFrontend(TestCase):
 
     def testHomePage(self):
         response = self.client.get('/')
-        self.assertContains(response, 'Content')
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get('/', follow=True)
+        self.assertContains(response,
+                            '<input type="password" name="password" placeholder="Пароль..." class="form-control" >',
+                            status_code=200,
+                            )
+        # print(response.content.decode(encoding='utf-8'))
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.create_superuser('admin', 'admin@admin.com', '123asdFGH')
+        user2 = User.objects.create_user('elena', 'elena@drros.ru', 'not123asdFGH')
+        self.client.post('/', data={'username': 'admin', 'password': '123asdFGH'}, follow=True)
+        self.client.login(username='admin', password='123asdFGH')
+        response = self.client.get('/')
+        self.assertContains(response,
+                            '<span class="hello-msg">Здравствуйте, admin </span>',
+                            status_code=200,
+                            html=True
+                            )
+        self.client.logout()
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get('/', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response,
+                            '<input type="password" name="password" placeholder="Пароль..." class="form-control" >',
+                            status_code=200,
+                            )
+        self.client.login(username='elena', password='not123asdFGH')
+        response = self.client.get('/', follow=True)
+        # print(response.content.decode(encoding='utf-8'))
+        self.assertContains(response,
+                            '<span class="hello-msg">Здравствуйте, elena </span>',
+                            status_code=200,
+                            html=True
+                            )
+        response = self.client.get('/create_task', follow=True)
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post('/create_task/', data={
+            'task_header': 'Тестовый звонок header',
+            'task_content': 'Тестовый звонок content',
+            'task_type': 'Звонок',
+            'task_date': datetime.datetime.strftime(timezone.localtime()+datetime.timedelta(days=1), '%d.%m.%Y %H:%M')
+        })
         print(response.content.decode(encoding='utf-8'))
+        task = Task.objects.get(task_header='Тестовый звонок header')
+        self.assertEqual(task.task_content, 'Тестовый звонок content')
+        self.assertEqual(task.task_type, 'Звонок')
