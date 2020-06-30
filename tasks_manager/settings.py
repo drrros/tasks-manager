@@ -133,3 +133,18 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
+
+CELERY_BROKER_URL = 'redis://10.1.1.12:6379'
+CELERY_RESULT_BACKEND = 'redis://10.1.1.12:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Europe/Volgograd'
+# parser_app.conf.enable_utc = False # so celery doesn't take utc by default
+# CELERY_BEAT_SCHEDULE = {
+#  'check-vz-10-min': {
+#        'task': 'parser_app.tasks.parse_vz',
+#        'schedule': 600.0,
+#        'args': None
+#     },
+# }
