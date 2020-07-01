@@ -1,6 +1,6 @@
 import datetime
+from unittest.mock import patch
 
-from django.test.client import MULTIPART_CONTENT
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
@@ -10,7 +10,8 @@ from .models import Task
 
 
 class TestModels(TestCase):
-    def setUp(self):
+    @patch("django.db.models.signals.ModelSignal.send", autospec=True)
+    def setUp(self, mock):
         user = User.objects.create(username='user', email='user@domain.com', password='thisisnotapassword')
         Task.objects.create(
             task_header='Звонок клиенту',
@@ -19,23 +20,28 @@ class TestModels(TestCase):
             task_date=timezone.localtime() + datetime.timedelta(days=4),
             author=user
         )
+        self.assertTrue(mock)
 
     def testUserCreated(self):
         user = User.objects.get(id=1)
         self.assertEqual(user.username, 'user')
 
-    def testTaksCreated(self):
+    @patch("django.db.models.signals.ModelSignal.send", autospec=True)
+    def testTasksCreated(self, mock):
         task = Task.objects.get(task_header='Звонок клиенту')
         self.assertEqual(task.task_content, 'Позвонить клиенту')
         self.assertEqual(task.task_type, 'Звонок')
         self.assertEqual(task.author, User.objects.get(id=1))
+        self.assertTrue(mock)
+
 
 class TestFrontend(TestCase):
     def setUp(self):
         TestModels.setUp(self)
         self.client = Client()
 
-    def testHomePage(self):
+    @patch("django.db.models.signals.ModelSignal.send", autospec=True)
+    def testHomePage(self, mock):
         response = self.client.get('/')
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
         response = self.client.get('/', follow=True)
@@ -45,8 +51,8 @@ class TestFrontend(TestCase):
                             )
         # print(response.content.decode(encoding='utf-8'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        user = User.objects.create_superuser('admin', 'admin@admin.com', '123asdFGH')
-        user2 = User.objects.create_user('elena', 'elena@drros.ru', 'not123asdFGH')
+        User.objects.create_superuser('admin', 'admin@admin.com', '123asdFGH')
+        User.objects.create_user('elena', 'elena@drros.ru', 'not123asdFGH')
         self.client.post('/', data={'username': 'admin', 'password': '123asdFGH'}, follow=True)
         self.client.login(username='admin', password='123asdFGH')
         response = self.client.get('/')
@@ -84,3 +90,4 @@ class TestFrontend(TestCase):
         task = Task.objects.get(task_header='Тестовый звонок header')
         self.assertEqual(task.task_content, 'Тестовый звонок content')
         self.assertEqual(task.task_type, 'Звонок')
+        self.assertTrue(mock)

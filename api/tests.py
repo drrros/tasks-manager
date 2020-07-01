@@ -1,4 +1,5 @@
 import datetime
+from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.test.client import RequestFactory
@@ -15,7 +16,8 @@ from .serializers import UserSerializer, TaskSerializer
 class TasksTest(APITestCase):
     """ Test module for test tasks API """
 
-    def setUp(self):
+    @patch("django.db.models.signals.ModelSignal.send", autospec=True)
+    def setUp(self, mock):
         user = User.objects.create(username='user', email='user@domain.com', password='thisisnotapassword')
         user2 = User.objects.create(username='user2', email='user2@domain.com', password='2thisisnotapassword')
         Task.objects.create(
@@ -33,10 +35,10 @@ class TasksTest(APITestCase):
             task_date=timezone.localtime() + datetime.timedelta(days=3),
             author=admin
         )
+        self.assertTrue(mock)
 
-        # self.client = APIClient()
-
-    def testTasks(self):
+    @patch("django.db.models.signals.ModelSignal.send", autospec=True)
+    def testTasks(self, mock):
         # test unauthenticated response
         response = self.client.get('/api/')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -86,6 +88,7 @@ class TasksTest(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + user2_token.key)
         response = self.client.get(reverse('task-detail', kwargs={'pk': response_create.data['id']}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertTrue(mock)
 
 
 class UserTest(APITestCase):

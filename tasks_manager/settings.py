@@ -140,12 +140,4 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Europe/Volgograd'
-# parser_app.conf.enable_utc = False # so celery doesn't take utc by default
-# CELERY_BEAT_SCHEDULE = {
-#  'check-vz-10-min': {
-#        'task': 'sendemail',
-#        'schedule': 10.0,
-#        'args': None
-#     },
-# }
 CELERY_IMPORTS = ('tasks.celery_tasks' )

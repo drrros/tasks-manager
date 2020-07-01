@@ -1,6 +1,6 @@
 import datetime
 
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save, pre_delete
 from django.dispatch import receiver
 from .models import Task, CeleryTask
 from .celery_tasks import sendemail
@@ -15,11 +15,19 @@ def tasks_post_save_signal(sender, instance: Task, **kwargs):
     CeleryTask.objects.create(celery_task_id=celery_task.id,
                               corresp_task=instance,
                               completed=False)
-    pass
 
 
 @receiver(pre_save, sender=Task)
 def tasks_pre_save_signal(sender, instance: Task, **kwargs):
+    try:
+        celery_task = CeleryTask.objects.get(corresp_task=instance)
+        celery_task.delete()
+    except CeleryTask.DoesNotExist:
+        pass
+
+
+@receiver(pre_delete, sender=Task)
+def tasks_pre_delete_signal(sender, instance: Task, **kwargs):
     try:
         celery_task = CeleryTask.objects.get(corresp_task=instance)
         celery_task.delete()
