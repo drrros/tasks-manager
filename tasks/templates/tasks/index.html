@@ -32,7 +32,7 @@
                         {{ task.task_date|date:'d/m/Y H:i' }}
                       </td>
                         <td><a class="btn btn-sm btn-info" href="{% url 'update_task' task.id %}">Изменить</a></td>
-                        <td><a class="btn btn-sm btn-danger" href="{% url 'delete_task' task.id %}">Удалить</a></td>
+                        <td><a class="btn btn-sm btn-danger" data-toggle="modal" data-target="#askDeleteModal" href="#" data-id="{{ task.id }}">Удалить</a></td>
                       </tr>
                       {% endfor %}
                       </tbody>
@@ -40,19 +40,49 @@
                     <div class="container-fluid">
                         <div class="form-group row align-items-center">
                             <a href="{% url 'create_task' %}" class="btn btn-primary btn-lg btn-block">Создать</a>
+                        </div>
                     </div>
-                </div>
               </div>
 
           </div>
         </div>
     </div>
+    
+    <!-- askDeleteModal -->
+<div class="modal fade" id="askDeleteModal" tabindex="-1" role="dialog" aria-labelledby="askDeleteModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Удаление события</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Вы уверены, что хотите удалить событие?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" data-dismiss="modal">Назад</button>
+        <a href="#" type="button" id="confirmButton" class="btn btn-danger">Удалить</a>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
 {% endblock content %}
 
 {% block scripts %}
 
-<script>
-    $('.tooltippopup').tooltip();
-</script>
+    <script>
+        $('.tooltippopup').tooltip();
+    </script>
+
+    <script>
+        $('#askDeleteModal').on('show.bs.modal', function (event) {
+          let myVal = $(event.relatedTarget).data('id');
+          $(this).find("#confirmButton").attr("href", "/delete_task/"+myVal);
+        });
+    </script>
 
 {% endblock scripts %}

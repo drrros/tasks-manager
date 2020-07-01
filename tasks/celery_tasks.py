@@ -10,6 +10,7 @@ from .models import CeleryTask
 @shared_task
 def sendemail(recipient):
     try:
+        # https://github.com/celery/celery/issues/4300
         celery_task = CeleryTask.objects.get(celery_task_id=sendemail.request.id)
         if not celery_task.completed:
             print('task: sendemail, recepient:' + recipient)
