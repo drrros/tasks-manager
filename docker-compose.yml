@@ -21,7 +21,7 @@
       container_name: tm_db
     web:
       build: .
-      command: gunicorn -t 180 -w 3 contract_manager.wsgi:application --bind 0.0.0.0:8000
+      command: gunicorn -t 180 -w 3 tasks_manager.wsgi:application --bind 0.0.0.0:8000
       restart: always
       env_file:
         - prod.env
