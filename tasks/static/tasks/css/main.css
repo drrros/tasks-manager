@@ -1,0 +1,11 @@
+html,body{
+  width:100%;
+  margin:0;
+  height:100%;
+  background-color: #ebeff5;
+}
+
+.hello-msg{
+    color: white;
+    margin-right: 20px;
+}
