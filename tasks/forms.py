@@ -1,20 +1,9 @@
-from django import forms
-from django.forms import ModelForm, Textarea, DateInput, DateTimeInput
+from django.forms import ModelForm, Textarea, DateTimeInput
+
 from .models import Task
 
 
 class TaskForm(ModelForm):
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['author'].queryset = Task.objects.filter(owner=request.user)
-
-    # task_date = forms.DateTimeField(required=False,
-    #                                  widget=DateTimeInput(
-    #                                      format='%d/%m/%Y %H:%M',
-    #                                      attrs={'class': 'datetimefield'}
-    #                                  ),
-    #                                  localize=True,
-    #                                  input_formats=['%d/%m/%Y %H:%M',])
 
     class Meta:
         model = Task

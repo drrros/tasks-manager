@@ -6,13 +6,18 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from .forms import TaskForm
 from .models import Task
+from .filters import TaskFilter
 
 
 @login_required(login_url='login_user')
 def index(request):
     author = User.objects.get(username=request.user.username)
+    tasks = Task.objects.filter(author_id=author.id)
+    task_filter = TaskFilter(request.GET, queryset=tasks)
+    tasks = task_filter.qs
     context = {
-        'tasks': Task.objects.filter(author_id=author.id)
+        'tasks': tasks,
+        'task_filter': task_filter
     }
     return render(request, 'tasks/index.html', context=context)
 
