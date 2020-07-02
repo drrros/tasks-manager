@@ -10,15 +10,20 @@
           <div class="col-md-12">
             <div class="card card-body">
                     <h5 class="text-center">События</h5>
-                <br>
-                <div class="row">
-                    <div class="col">
+                <hr>
                         <form method="get">
-                            {{ task_filter.form }}
-                            <button class="btn btn-primary btn-sm" type="submit">Поиск</button>
+                            <div class="mb-3 form-row">
+
+                                {% for field in task_filter.form %}
+                                    <div class="col">
+                                        {{ field }}
+                                    </div>
+
+                                {% endfor %}
+                                <button class="btn btn-primary btn-sm" type="submit">Поиск</button>
+                            </div>
+
                         </form>
-                    </div>
-                </div>
                   <table class="table table-hover table-responsive-md">
                       <thead>
                       <tr>
