@@ -26,7 +26,7 @@ def sendemail(recipient, task_header, task_content, task_date, task_type):
                     fail_silently=False,
                 )
             except smtplib.SMTPException as e:
-                pass
+                print(e)
                 # TODO: make smth with it (retry?)
             celery_task.completed = True
             celery_task.save()
