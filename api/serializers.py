@@ -10,12 +10,25 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
                                                 read_only=True
                                                 # queryset=Task.objects.all()
                                                 )
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(min_length=8, write_only=True)
 
     class Meta:
         model = User
         fields = ['url', 'id', 'username', 'email', 'password', 'tasks']
 
+    def create(self, validated_data):
+        user = super(UserSerializer, self).create(validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password')
+        user = super(UserSerializer, self).update(instance, validated_data)
+        if password:
+            user.set_password(password)
+        user.save()
+        return user
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
 

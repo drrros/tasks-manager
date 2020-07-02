@@ -11,7 +11,11 @@ def tasks_post_save_signal(sender, instance: Task, **kwargs):
     # new task
     eta = instance.task_date - datetime.timedelta(hours=1)
     expires = eta + datetime.timedelta(minutes=40)
-    celery_task = sendemail.apply_async((instance.author.email,), eta=eta, expires=expires)
+    celery_task = sendemail.apply_async((instance.author.email,
+                                         instance.task_header,
+                                         instance.task_content,
+                                         instance.task_date,
+                                         instance.task_type), eta=eta, expires=expires)
     CeleryTask.objects.create(celery_task_id=celery_task.id,
                               corresp_task=instance,
                               completed=False)

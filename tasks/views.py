@@ -25,7 +25,6 @@ def create_task(request):
             form.instance.author = User.objects.get(username=request.user.username)
             form.save()
             return redirect('index')
-
     else:
         form = TaskForm()
     context = {'form': form, 'type': 'create'}
@@ -46,13 +45,11 @@ def update_task(request, pk):
 @login_required(login_url='login_user')
 def delete_task(request, pk):
     task = get_object_or_404(Task, id=pk)
-    if request.method == 'POST':
+    if request.method == 'GET':
         task.delete()
         return redirect('index')
     context = {'item': task}
     return render(request, 'tasks/delete_task.html', context)
-
-# TODO: migrate delete_task to modal window
 
 def login_user(request):
     if request.user.is_authenticated:
