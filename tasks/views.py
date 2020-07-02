@@ -46,8 +46,9 @@ def update_task(request, pk):
 def delete_task(request, pk):
     task = get_object_or_404(Task, id=pk)
     if request.method == 'GET':
-        task.delete()
-        return redirect('index')
+        if task.author_id == request.user.id:
+            task.delete()
+            return redirect('index')
     context = {'item': task}
     return render(request, 'tasks/delete_task.html', context)
 

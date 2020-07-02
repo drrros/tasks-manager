@@ -90,4 +90,8 @@ class TestFrontend(TestCase):
         task = Task.objects.get(task_header='Тестовый звонок header')
         self.assertEqual(task.task_content, 'Тестовый звонок content')
         self.assertEqual(task.task_type, 'Звонок')
+        # test task delete after get call to delete_task/id
+        response = self.client.get('/delete_task/'+str(task.id), follow=True)
+        query = Task.objects.filter(task_header='Тестовый звонок header')
+        self.assertEqual(query.count(), 0)
         self.assertTrue(mock)
