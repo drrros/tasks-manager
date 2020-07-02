@@ -9,3 +9,9 @@ html,body{
     color: white;
     margin-right: 20px;
 }
+
+.navbar{
+    position:fixed;
+    width:100%;
+    height: 5%;
+}
