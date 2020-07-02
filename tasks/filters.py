@@ -26,7 +26,7 @@ class TaskFilter(django_filters.FilterSet):
 
     task_header = django_filters.CharFilter(field_name='task_header',
                                             lookup_expr='icontains',
-                                            label='Поиск по содержанию:',
+                                            label='',
                                             widget=TextInput(attrs={'class': 'form-control form-control-sm',
                                                                          'placeholder': 'Поиск по заголовку события:'}
                                                              )
