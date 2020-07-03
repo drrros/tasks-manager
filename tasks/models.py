@@ -1,8 +1,9 @@
-import datetime
 import uuid
+import datetime
 
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 
 class Task(models.Model):
@@ -23,8 +24,8 @@ class Task(models.Model):
         return f'{self.task_header} ({self.task_type})'
 
     @property
-    def recent(self):
-        return self.date_created > (self.date_created - datetime.timedelta(days=1))
+    def in_future(self):
+        return timezone.localtime() < self.task_date
 
 
 class CeleryTask(models.Model):
