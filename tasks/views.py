@@ -1,8 +1,11 @@
+import datetime
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required  # , permission_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 
 from .forms import TaskForm
 from .models import Task
@@ -12,7 +15,9 @@ from .filters import TaskFilter
 @login_required(login_url='login_user')
 def index(request):
     author = User.objects.get(username=request.user.username)
-    tasks = Task.objects.filter(author_id=author.id)
+    tasks = Task.objects.filter(author_id=author.id).filter(
+                                        task_date__gte=(timezone.localtime() - datetime.timedelta(days=7))).order_by(
+                                                                                            'task_date')
     task_filter = TaskFilter(request.GET, queryset=tasks)
     tasks = task_filter.qs
     context = {
