@@ -10,7 +10,7 @@ class TaskFilter(django_filters.FilterSet):
                                                label='',
                                                widget=DateTimeInput(format="'%D.%m.%Y %H:%M'",
                                                                     attrs={'class':'datetimefield form-control form-control-sm',
-                                                                         'placeholder': 'Дата с'}
+                                                                         'placeholder': 'Дата с:'}
                                                                     )
                                                )
 
@@ -19,23 +19,22 @@ class TaskFilter(django_filters.FilterSet):
                                              label='',
                                              widget=DateTimeInput(format="'%D.%m.%Y %H:%M'",
                                                                   attrs={'class': 'datetimefield form-control form-control-sm',
-                                                                         'placeholder': 'по'
+                                                                         'placeholder': 'Дата по:'
                                                                          }
                                                                   )
                                              )
 
     task_header = django_filters.CharFilter(field_name='task_header',
                                             lookup_expr='icontains',
-                                            label='Поиск по содержанию:',
+                                            label='',
                                             widget=TextInput(attrs={'class': 'form-control form-control-sm',
-                                                                         'placeholder': 'Поиск по содержанию:'}
+                                                                         'placeholder': 'Поиск по заголовку события:'}
                                                              )
                                             )
 
     task_type = django_filters.ChoiceFilter(field_name='task_type',
                                             choices=[('Звонок', 'Звонок'), ('Встреча', 'Встреча')],
                                             widget=Select(attrs={'class': 'form-control form-control-sm',
-                                                                         'placeholder': 'Тип события'
                                                                 }
                                                           )
                                             )

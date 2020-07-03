@@ -1,4 +1,4 @@
-from django.forms import ModelForm, Textarea, DateTimeInput
+from django.forms import ModelForm, Textarea, DateTimeInput, TextInput, Select
 
 from .models import Task
 
@@ -18,8 +18,20 @@ class TaskForm(ModelForm):
             ),
             'task_date': DateTimeInput(
                 attrs={
-                    'class': 'datetimefield'
+                    'class': 'datetimefield form-control'
                 },
 
-            )
+            ),
+            'task_header': TextInput(
+                attrs={
+                    'class': 'form-control'
+                },
+
+            ),
+            'task_type': Select(
+                attrs={
+                    'class': 'form-control'
+                },
+
+            ),
         }
