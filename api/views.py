@@ -30,7 +30,6 @@ class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-
     def get_queryset(self):
         if self.request.user.is_superuser:
             return Task.objects.all().order_by('-date_created')

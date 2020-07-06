@@ -9,8 +9,9 @@ class TaskFilter(django_filters.FilterSet):
                                                lookup_expr='gte',
                                                label='',
                                                widget=DateTimeInput(format="'%D.%m.%Y %H:%M'",
-                                                                    attrs={'class':'datetimefield form-control form-control-sm',
-                                                                         'placeholder': 'Дата с:'}
+                                                                    attrs={
+                                                                        'class': 'datetimefield form-control form-control-sm',
+                                                                        'placeholder': 'Дата с:'}
                                                                     )
                                                )
 
@@ -18,9 +19,10 @@ class TaskFilter(django_filters.FilterSet):
                                              lookup_expr='lte',
                                              label='',
                                              widget=DateTimeInput(format="'%D.%m.%Y %H:%M'",
-                                                                  attrs={'class': 'datetimefield form-control form-control-sm',
-                                                                         'placeholder': 'Дата по:'
-                                                                         }
+                                                                  attrs={
+                                                                      'class': 'datetimefield form-control form-control-sm',
+                                                                      'placeholder': 'Дата по:'
+                                                                  }
                                                                   )
                                              )
 
@@ -28,16 +30,17 @@ class TaskFilter(django_filters.FilterSet):
                                             lookup_expr='icontains',
                                             label='',
                                             widget=TextInput(attrs={'class': 'form-control form-control-sm',
-                                                                         'placeholder': 'Поиск по заголовку события:'}
+                                                                    'placeholder': 'Поиск по заголовку события:'}
                                                              )
                                             )
 
     task_type = django_filters.ChoiceFilter(field_name='task_type',
                                             choices=[('Звонок', 'Звонок'), ('Встреча', 'Встреча')],
                                             widget=Select(attrs={'class': 'form-control form-control-sm',
-                                                                }
+                                                                 }
                                                           )
                                             )
+
     class Meta:
         model = Task
         fields = ['task_header', 'task_type']

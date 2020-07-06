@@ -23,11 +23,13 @@ class TestModels(TestCase):
         self.assertTrue(mock)
 
     def testUserCreated(self):
+        """Test creating new user using ORM"""
         user = User.objects.get(id=1)
         self.assertEqual(user.username, 'user')
 
     @patch("django.db.models.signals.ModelSignal.send", autospec=True)
     def testTasksCreated(self, mock):
+        """Test if task is created successfully"""
         task = Task.objects.get(task_header='Звонок клиенту')
         self.assertEqual(task.task_content, 'Позвонить клиенту')
         self.assertEqual(task.task_type, 'Звонок')
@@ -42,6 +44,8 @@ class TestFrontend(TestCase):
 
     @patch("django.db.models.signals.ModelSignal.send", autospec=True)
     def testHomePage(self, mock):
+        """Test home page"""
+        # test unauthorized request redirects to login page
         response = self.client.get('/')
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
         response = self.client.get('/', follow=True)
@@ -51,16 +55,19 @@ class TestFrontend(TestCase):
                             )
         # print(response.content.decode(encoding='utf-8'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # test login
         User.objects.create_superuser('admin', 'admin@admin.com', '123asdFGH')
         User.objects.create_user('elena', 'elena@drros.ru', 'not123asdFGH')
         self.client.post('/', data={'username': 'admin', 'password': '123asdFGH'}, follow=True)
         self.client.login(username='admin', password='123asdFGH')
         response = self.client.get('/')
+        # test if logging in admin is successful
         self.assertContains(response,
                             '<span class="hello-msg">Здравствуйте, admin </span>',
                             status_code=status.HTTP_200_OK,
                             html=True
                             )
+        # test logout
         self.client.logout()
         response = self.client.get('/')
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
@@ -70,6 +77,7 @@ class TestFrontend(TestCase):
                             '<input type="password" name="password" placeholder="Пароль..." class="form-control" >',
                             status_code=status.HTTP_200_OK,
                             )
+        # test if logging in user is successful
         self.client.login(username='elena', password='not123asdFGH')
         response = self.client.get('/', follow=True)
         # print(response.content.decode(encoding='utf-8'))
@@ -80,6 +88,7 @@ class TestFrontend(TestCase):
                             )
         response = self.client.get('/create_task', follow=True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # test creating Task using web page
         response = self.client.post('/create_task/', data={
             'task_header': 'Тестовый звонок header',
             'task_content': 'Тестовый звонок content',

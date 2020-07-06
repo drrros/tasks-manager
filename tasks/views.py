@@ -16,8 +16,8 @@ from .filters import TaskFilter
 def index(request):
     author = User.objects.get(username=request.user.username)
     tasks = Task.objects.filter(author_id=author.id).filter(
-                                        task_date__gte=(timezone.localtime() - datetime.timedelta(days=7))).order_by(
-                                                                                            'task_date')
+        task_date__gte=(timezone.localtime() - datetime.timedelta(days=7))).order_by(
+        'task_date')
     task_filter = TaskFilter(request.GET, queryset=tasks)
     tasks = task_filter.qs
     context = {
@@ -25,6 +25,7 @@ def index(request):
         'task_filter': task_filter
     }
     return render(request, 'tasks/index.html', context=context)
+
 
 @login_required(login_url='login_user')
 def create_task(request):
@@ -40,6 +41,7 @@ def create_task(request):
     context = {'form': form, 'type': 'create'}
     return render(request, 'tasks/task_form.html', context)
 
+
 @login_required(login_url='login_user')
 def update_task(request, pk):
     task = get_object_or_404(Task, id=pk)
@@ -52,6 +54,7 @@ def update_task(request, pk):
     context = {'form': form, 'type': 'update'}
     return render(request, 'tasks/task_form.html', context)
 
+
 @login_required(login_url='login_user')
 def delete_task(request, pk):
     task = get_object_or_404(Task, id=pk)
@@ -61,6 +64,7 @@ def delete_task(request, pk):
             return redirect('index')
     context = {'item': task}
     return render(request, 'tasks/delete_task.html', context)
+
 
 def login_user(request):
     if request.user.is_authenticated:
@@ -76,6 +80,7 @@ def login_user(request):
             else:
                 messages.info(request, 'Неправильное имя пользователя или пароль')
         return render(request, 'tasks/login.html', context={})
+
 
 @login_required(login_url='login_user')
 def logout_user(request):
