@@ -30,8 +30,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         user.save()
         return user
 
-class TaskSerializer(serializers.HyperlinkedModelSerializer):
 
+class TaskSerializer(serializers.HyperlinkedModelSerializer):
     author = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
